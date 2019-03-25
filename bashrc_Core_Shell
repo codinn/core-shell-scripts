@@ -29,7 +29,11 @@ if [ -z "$INSIDE_EMACS" ]; then
             done
         }
 
-        printf '\e]7;%s\a' "file://$HOSTNAME$url_path"
+        if [ -n "$TMUX" ]; then
+            printf '\ePtmux;\e\e]7;%s\a\e\\' "file://$HOSTNAME$url_path"
+        else
+            printf '\e]7;%s\a' "file://$HOSTNAME$url_path"
+        fi
     }
 
     PROMPT_COMMAND="update_coreshell_cwd${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
