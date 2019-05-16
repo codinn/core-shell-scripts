@@ -15,8 +15,8 @@ if [ -z "$INSIDE_EMACS" ]; then
             # Use LC_CTYPE=C to process text byte-by-byte. Ensure that
             # LC_ALL isn't set, so it doesn't interfere.
             local i ch hexch LC_CTYPE=C LC_ALL=
-            for ((i = 0; i < ${#PWD}; ++i)); do
-                ch="${PWD:i:1}"
+            for (( i = 0; i < ${#PWD}; i++ )); do
+                ch="${PWD:$i:1}"
                 
                 if [[ "$ch" =~ [/._~A-Za-z0-9-] ]]; then
                     url_path+="$ch"
@@ -30,11 +30,25 @@ if [ -z "$INSIDE_EMACS" ]; then
         }
 
         if [ -n "$TMUX" ]; then
-            printf '\ePtmux;\e\e]7;%s\a\e\\' "file://$HOSTNAME$url_path"
+            printf '\ePtmux;\e\e]7;%s\a\e\\' "file://$cs_hostname$url_path"
         else
-            printf '\e]7;%s\a' "file://$HOSTNAME$url_path"
+            printf '\e]7;%s\a' "file://$cs_hostname$url_path"
         fi
     }
 
-    PROMPT_COMMAND="update_coreshell_cwd${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+    # NOTE: hostname code from iTerm2 shell integration: https://github.com/gnachman/iterm2-website/blob/master/source/shell_integration/zsh
+    # If hostname -f is slow on your system, set cs_hostname prior to sourcing this script.
+    [[ -z "$cs_hostname" ]] && cs_hostname=`hostname -f 2>/dev/null`
+    # some flavors of BSD (i.e. NetBSD and OpenBSD) don't have the -f option
+    if [ $? -ne 0 ]; then
+      cs_hostname=`hostname`
+    fi
+    # NOTE: end of code from iTerm2
+
+    if [[ $SHELL == *zsh ]]; then
+        [[ -z $precmd_functions ]] && precmd_functions=()
+        precmd_functions=($precmd_functions update_coreshell_cwd)
+    else
+        PROMPT_COMMAND="update_coreshell_cwd${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+    fi
 fi
