@@ -1,6 +1,5 @@
 # zsh support for Core Shell, reference: /etc/bashrc_Apple_Terminal on macOS.
 
-
 # Working Directory
 #
 # Tell the terminal about the current working directory at each prompt.
@@ -8,31 +7,31 @@
 if [ -z "$INSIDE_EMACS" ]; then
 
     update_coreshell_cwd() {
-		# Identify the directory using a "file:" scheme URL, including
-		# the host name to disambiguate local vs. remote paths.
+        # Identify the directory using a "file:" scheme URL, including
+        # the host name to disambiguate local vs. remote paths.
 
-		# Percent-encode the pathname.
-		local url_path=''
-		{
-		    # Use LC_CTYPE=C to process text byte-by-byte. Ensure that
-		    # LC_ALL isn't set, so it doesn't interfere.
-		    local i ch hexch LC_CTYPE=C LC_ALL=
-		    for ((i = 1; i <= ${#PWD}; ++i)); do
-			ch="$PWD[i]"
-			if [[ "$ch" =~ [/._~A-Za-z0-9-] ]]; then
-			    url_path+="$ch"
-			else
-			    printf -v hexch "%02X" "'$ch"
-			    url_path+="%$hexch"
-			fi
-		    done
-		}
+        # Percent-encode the pathname.
+        local url_path=''
+        {
+            # Use LC_CTYPE=C to process text byte-by-byte. Ensure that
+            # LC_ALL isn't set, so it doesn't interfere.
+            local i ch hexch LC_CTYPE=C LC_ALL=
+            for ((i = 1; i <= ${#PWD}; ++i)); do
+            ch="$PWD[i]"
+            if [[ "$ch" =~ [/._~A-Za-z0-9-] ]]; then
+                url_path+="$ch"
+            else
+                printf -v hexch "%02X" "'$ch"
+                url_path+="%$hexch"
+            fi
+            done
+        }
 
 
         if [ -n "$TMUX" ]; then
             printf '\ePtmux;\e\e]7;%s\a\e\\' "file://$HOST$url_path"
         else
-			printf '\e]7;%s\a' "file://$HOST$url_path"
+            printf '\e]7;%s\a' "file://$HOST$url_path"
         fi
     }
 
