@@ -97,7 +97,7 @@ elif [ -n "\$ZSH_VERSION" ]; then
 fi
 EOM
 
-grep -qs "\.shrc_Core_Shell" ~/.bash_profile || printf '\n[[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && [ -r "$HOME/.shrc_Core_Shell" ] && . "$HOME/.shrc_Core_Shell"' >> ~/.bash_profile
-grep -qs "\.shrc_Core_Shell" ~/.zshrc || printf '\n[[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && [ -r "$HOME/.shrc_Core_Shell" ] && . "$HOME/.shrc_Core_Shell"' >> ~/.zshrc
+grep -qs "\.shrc_Core_Shell" ~/.bash_profile || printf '\n[[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && [ -r "$HOME/.shrc_Core_Shell" ] && . "$HOME/.shrc_Core_Shell" || true' >> ~/.bash_profile
+grep -qs "\.shrc_Core_Shell" ~/.zshrc || printf '\n[[ -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && [ -r "$HOME/.shrc_Core_Shell" ] && . "$HOME/.shrc_Core_Shell" || true' >> ~/.zshrc
 
 rm -rf ~/.bashrc_Core_Shell
